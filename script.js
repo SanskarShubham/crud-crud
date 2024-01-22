@@ -46,13 +46,13 @@ function displayAppointments() {
     axios
         .get(baseUrl)
         .then((appointments) => {
-            console.log(appointments);
+            // console.log(appointments);
             appointments.data.forEach((appointment, index) => {
                 const myHtmlContent = `
         <td>${appointment.name}</td>
         <td>${appointment.emailid}</td>
         <td>${appointment.phone_no}</td>
-        <td><button class="btn btn-primary" onclick="deleteAppointment(${appointment._id})" >Edit</button><button onclick="updateAppointment(${appointment._id})" class="btn btn-danger m-3">delete</button></td>`;
+        <td><button onclick="updateAppointment('${appointment._id}',event)" class="btn btn-danger m-3">Edit</button><button class="btn btn-primary removeConditionBtn" onclick="deleteAppointment('${appointment._id}',event)" >delete</button></td>`;
                 var newRow = tableRef.insertRow(tableRef.rows.length);
                 newRow.innerHTML = myHtmlContent;
             });
@@ -64,7 +64,42 @@ function displayAppointment(appointment) {
     <td>${appointment.name}</td>
     <td>${appointment.emailid}</td>
     <td>${appointment.phone_no}</td>
-    <td><button class="btn btn-primary" onclick="deleteAppointment(${appointment._id})" >Edit</button><button onclick="updateAppointment(${appointment._id})" class="btn btn-danger m-3">delete</button></td>`;
+    <td><button onclick="updateAppointment('${appointment._id}',event)" class="btn btn-danger m-3">Edit</button><button class="btn btn-primary removeConditionBtn" onclick="deleteAppointment('${appointment._id}',event)" >delete</button></td>`;
     var newRow = tableRef.insertRow(tableRef.rows.length);
     newRow.innerHTML = myHtmlContent;
+}
+function deleteAppointment(id, e) {
+    const confirmRes = confirm("Are you sure want to delete ?")
+    if (!confirmRes) {
+        return;
+    }
+    axios
+        .delete(baseUrl + id)
+        .then((res) => {
+            if (res.status === 200) {
+
+                // event.target will be the input element.
+                var td = e.target.parentNode;
+                var tr = td.parentNode; // the row to be removed
+                tr.parentNode.removeChild(tr);
+            }
+
+
+        })
+        .catch((err) => console.log(err));
+
+}
+
+function updateAppointment(id) {
+
+
+    axios
+        .patch(`${baseUrl}/${id}`, {
+            title: "comeleted crash course ",
+            completed: true,
+        })
+        .then((res) => console.log(res))
+        .catch((err) => console.log(err));
+
+
 }
