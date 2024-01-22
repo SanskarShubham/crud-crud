@@ -18,7 +18,7 @@
      
       <div class="container ">
         <h3 class="mt-3">Add Booking Appointment</h3>
-        <form onsubmit="addExpense(event)" class="row g-4">
+        <form onsubmit="addAppoint(event)" class="row g-4">
             <div class="col-auto">
                 <label for="exampleFormControlInput1" class="form-label">Name</label>
                 <input type="text" class="form-control" id="name" placeholder="Abc...">
@@ -38,10 +38,10 @@
             </div>
           </form>
 
-          <table class="table mt-5">
+          <table class="table mt-5" id="appoint-table">
             <thead>
               <tr>
-                <th scope="col">#</th>
+              
                 <th scope="col">Name</th>
                 <th scope="col">Email address</th>
                 <th scope="col">Phone Number</th>
@@ -49,13 +49,13 @@
               </tr>
             </thead>
             <tbody>
-              <tr>
+              <!-- <tr>
                 <th scope="row">1</th>
                 <td>Mark</td>
                 <td>Otto</td>
                 <td>@mdo</td>
                 <td><button class="btn btn-primary">Edit</button><button class="btn btn-danger m-3">delete</button></td>
-              </tr>
+              </tr> -->
              
             </tbody>
           </table>
