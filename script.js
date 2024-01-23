@@ -1,9 +1,9 @@
 document.addEventListener("DOMContentLoaded", () => {
-    displayAppointments();
+      displayAppointments();
 });
 
 const tableRef = document.getElementById("appoint-table").getElementsByTagName("tbody")[0];
-const baseUrl = "https://crudcrud.com/api/07c859c4e62e4e33ab85d6e5a1918c33/appointment/";
+const baseUrl = "https://crudcrud.com/api/f99fd699985748c6bc3984cf4a5d0497/appointment/";
 
 function addAppoint(e) {
     e.preventDefault();
@@ -52,7 +52,7 @@ function displayAppointments() {
         <td>${appointment.name}</td>
         <td>${appointment.emailid}</td>
         <td>${appointment.phone_no}</td>
-        <td><button onclick="updateAppointment('${appointment._id}',event)" class="btn btn-danger m-3">Edit</button><button class="btn btn-primary removeConditionBtn" onclick="deleteAppointment('${appointment._id}',event)" >delete</button></td>`;
+        <td><button onclick="updateAppointment('${appointment._id}',event)" class="btn btn-primary m-3">Edit</button><button class="btn btn-danger removeConditionBtn" onclick="deleteAppointment('${appointment._id}',event)" >delete</button></td>`;
                 var newRow = tableRef.insertRow(tableRef.rows.length);
                 newRow.innerHTML = myHtmlContent;
             });
@@ -64,7 +64,7 @@ function displayAppointment(appointment) {
     <td>${appointment.name}</td>
     <td>${appointment.emailid}</td>
     <td>${appointment.phone_no}</td>
-    <td><button onclick="updateAppointment('${appointment._id}',event)" class="btn btn-danger m-3">Edit</button><button class="btn btn-primary removeConditionBtn" onclick="deleteAppointment('${appointment._id}',event)" >delete</button></td>`;
+    <td><button onclick="updateAppointment('${appointment._id}',event)" class="btn btn-primary m-3">Edit</button><button class="btn btn-danger removeConditionBtn" onclick="deleteAppointment('${appointment._id}',event)" >delete</button></td>`;
     var newRow = tableRef.insertRow(tableRef.rows.length);
     newRow.innerHTML = myHtmlContent;
 }
@@ -91,15 +91,34 @@ function deleteAppointment(id, e) {
 }
 
 function updateAppointment(id) {
-
-
     axios
-        .patch(`${baseUrl}/${id}`, {
-            title: "comeleted crash course ",
-            completed: true,
-        })
-        .then((res) => console.log(res))
-        .catch((err) => console.log(err));
+    .get(baseUrl + id)
+    .then((res) => {
+        if (res.status === 200) {
+
+            const newName = prompt('Nmae:', res.data.name);
+            const newEmailid = prompt('Email:', res.data.emailid);
+            const newPhoneNO = prompt('Phone No:', res.data.phone_no);
+            const patientDetail = {
+                name:newName ,
+                emailid:newEmailid ,
+                phone_no:newPhoneNO ,
+            };
+            axios
+    .put(baseUrl+id,patientDetail)
+    .then((res) => {
+        if (res.status === 200) {
+            location.reload();
+        }
+    })
+    .catch((err) => console.log(err));
+        }
+
+
+    });
+    
+
+   
 
 
 }
