@@ -1,18 +1,19 @@
 document.addEventListener("DOMContentLoaded", () => {
-      displayAppointments();
+    displayAppointments();
 });
 
+const baseUrl = "https://crudcrud.com/api/2081cfe5a5464fbd9aab83ab7d2aaa0a/appointment/";
+
 const tableRef = document.getElementById("appoint-table").getElementsByTagName("tbody")[0];
-const baseUrl = "https://crudcrud.com/api/f99fd699985748c6bc3984cf4a5d0497/appointment/";
+const nameTag = document.getElementById("name");
+const emailid = document.getElementById("emailid");
+const phone_no = document.getElementById("phone_no");
+
 
 function addAppoint(e) {
     e.preventDefault();
 
-    const name = document.getElementById("name");
-    const emailid = document.getElementById("emailid");
-    const phone_no = document.getElementById("phone_no");
-
-    const nameVal = name.value.trim();
+    const nameVal = nameTag.value.trim();
     const emailidVal = emailid.value.trim();
     const phone_noVal = phone_no.value.trim();
 
@@ -37,7 +38,7 @@ function addAppoint(e) {
         })
         .catch((err) => console.log(err));
 
-    name.value = "";
+    nameTag.value = "";
     emailid.value = "";
     phone_no.value = "";
 }
@@ -48,23 +49,23 @@ function displayAppointments() {
         .then((appointments) => {
             // console.log(appointments);
             appointments.data.forEach((appointment, index) => {
-                const myHtmlContent = `
-        <td>${appointment.name}</td>
-        <td>${appointment.emailid}</td>
-        <td>${appointment.phone_no}</td>
-        <td><button onclick="updateAppointment('${appointment._id}',event)" class="btn btn-primary m-3">Edit</button><button class="btn btn-danger removeConditionBtn" onclick="deleteAppointment('${appointment._id}',event)" >delete</button></td>`;
-                var newRow = tableRef.insertRow(tableRef.rows.length);
-                newRow.innerHTML = myHtmlContent;
+                displayAppointmentTable(appointment);
             });
         })
         .catch((err) => console.log(err));
 }
 function displayAppointment(appointment) {
+    displayAppointmentTable(appointment);
+}
+
+function displayAppointmentTable(appointment) {
     const myHtmlContent = `
     <td>${appointment.name}</td>
     <td>${appointment.emailid}</td>
     <td>${appointment.phone_no}</td>
-    <td><button onclick="updateAppointment('${appointment._id}',event)" class="btn btn-primary m-3">Edit</button><button class="btn btn-danger removeConditionBtn" onclick="deleteAppointment('${appointment._id}',event)" >delete</button></td>`;
+    <td>
+    <button onclick="updateAppointment('${appointment._id}',event)" class="btn btn-primary m-3">Edit</button>
+    <button class="btn btn-danger removeConditionBtn" onclick="deleteAppointment('${appointment._id}',event)" >delete</button></td>`;
     var newRow = tableRef.insertRow(tableRef.rows.length);
     newRow.innerHTML = myHtmlContent;
 }
@@ -90,35 +91,54 @@ function deleteAppointment(id, e) {
 
 }
 
-function updateAppointment(id) {
+function updateAppointment(id, e) {
+
     axios
-    .get(baseUrl + id)
-    .then((res) => {
-        if (res.status === 200) {
+        .delete(baseUrl + id)
+        .then((res) => {
+            if (res.status === 200) {
 
-            const newName = prompt('Nmae:', res.data.name);
-            const newEmailid = prompt('Email:', res.data.emailid);
-            const newPhoneNO = prompt('Phone No:', res.data.phone_no);
-            const patientDetail = {
-                name:newName ,
-                emailid:newEmailid ,
-                phone_no:newPhoneNO ,
-            };
-            axios
-    .put(baseUrl+id,patientDetail)
-    .then((res) => {
-        if (res.status === 200) {
-            location.reload();
-        }
-    })
-    .catch((err) => console.log(err));
-        }
+                // event.target will be the input element.
+                var td = e.target.parentNode;
+                var tr = td.parentNode; // the row to be removed
+
+                nameTag.value = tr.childNodes[1].textContent;
+                emailid.value = tr.childNodes[3].textContent;
+                phone_no.value = tr.childNodes[5].textContent;
+
+                //deleting the row 
+                tr.parentNode.removeChild(tr);
+            }
 
 
-    });
-    
+        })
+        .catch((err) => console.log(err));
 
    
+    // axios
+    //     .get(baseUrl + id)
+    //     .then((res) => {
+    //         if (res.status === 200) {
 
+    //             const newName = prompt('Nmae:', res.data.name);
+    //             const newEmailid = prompt('Email:', res.data.emailid);
+    //             const newPhoneNO = prompt('Phone No:', res.data.phone_no);
+    //             const patientDetail = {
+    //                 name: newName,
+    //                 emailid: newEmailid,
+    //                 phone_no: newPhoneNO,
+    //             };
+    //             axios
+    //                 .put(baseUrl + id, patientDetail)
+    //                 .then((res) => {
+    //                     if (res.status === 200) {
+    //                         location.reload();
+    //                     }
+    //                 })
+    //                 .catch((err) => console.log(err));
+    //         }
+
+
+    //     });
 
 }
